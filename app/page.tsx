@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingIntro } from "../components/landing/LoadingIntro";
 import { Navbar } from "../components/landing/Navbar";
+import { Footer } from "../components/landing/Footer";
 import Link from "next/link";
 
 export default function LandingPage() {
@@ -150,6 +151,10 @@ export default function LandingPage() {
                 </div>
               </motion.div>
             </section>
+
+            <div>
+              <Footer />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

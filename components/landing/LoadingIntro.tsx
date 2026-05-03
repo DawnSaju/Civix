@@ -58,7 +58,7 @@ export function LoadingIntro({ onComplete }: LoadingIntroProps) {
           <div className="relative z-10 w-full max-w-5xl aspect-video flex items-center justify-center">
             <video
               ref={videoRef}
-              src="/Civix-Animation.mp4"
+              src="https://res.cloudinary.com/diljresga/video/upload/v1777819134/videos/Civix_animation_1_fs8qds.mp4"
               autoPlay
               muted
               playsInline
