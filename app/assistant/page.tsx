@@ -9,6 +9,7 @@ import { HeroIllustration } from "../../components/assistant/HeroIllustration";
 import { getGeminiResponse } from "../actions/gemini";
 import { ThoughtProcess } from "../../components/assistant/ThoughtProcess";
 import { ElectionTimeline, TimelineEvent } from "../../components/assistant/ElectionTimeline";
+import Link from "next/link";
 
 type Message = {
   role: "user" | "assistant";
@@ -115,10 +116,10 @@ export default function AssistantPage() {
         {!isChatting ? (
           /* Landing State */
           <div className="w-full max-w-3xl flex flex-col items-center text-center px-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            <div className="flex items-center gap-3 mb-10">
+            <Link href="/" className="flex items-center gap-3 mb-10 hover:opacity-80 transition-opacity">
               <CivixIcon size={30} />
               <span className="text-[2.25rem] leading-none tracking-tight serif font-medium">Civix</span>
-            </div>
+            </Link>
             <p className="text-sm md:text-[15px] text-neutral-500 tracking-wide mb-3">Your election guide, made simple.</p>
             <div className="mb-10"><StarIcon size={10} /></div>
             <div className="relative w-full flex items-center justify-center">
@@ -144,11 +145,20 @@ export default function AssistantPage() {
           </div>
         ) : (
           /* Chatting State */
-          <div className="w-full h-full flex flex-col max-w-3xl mx-auto">
+          <div className="w-full h-full flex flex-col max-w-3xl mx-auto relative">
+            {/* Top Bar Navigation */}
+            <div className="flex items-center justify-between px-6 py-6 absolute top-0 left-0 right-0 z-20">
+               <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
+                 <CivixIcon size={20} />
+                 <span className="text-lg serif font-medium">Civix</span>
+               </Link>
+               <div className="w-10 h-10"></div> {/* Placeholder for balance */}
+            </div>
+
             {/* Messages Area */}
             <div
               ref={scrollRef}
-              className="flex-1 overflow-y-auto px-6 py-12 space-y-12 scrollbar-hide"
+              className="flex-1 overflow-y-auto px-6 pt-24 pb-12 space-y-12 scrollbar-hide"
             >
               {messages.map((msg, idx) => (
                 <React.Fragment key={idx}>
