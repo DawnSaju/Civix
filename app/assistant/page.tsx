@@ -6,10 +6,14 @@ import { Sidebar } from "../../components/assistant/Sidebar";
 import { ChatInput } from "../../components/assistant/ChatInput";
 import { MessageBubble, TypingIndicator } from "../../components/assistant/MessageBubble";
 import { HeroIllustration } from "../../components/assistant/HeroIllustration";
+import { getGeminiResponse } from "../actions/gemini";
+import { ThoughtProcess } from "../../components/assistant/ThoughtProcess";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
+  thought?: string;
+  sources?: { title: string; url: string }[];
 };
 
 /**
@@ -20,6 +24,7 @@ export default function AssistantPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [useSearch, setUseSearch] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -35,32 +40,49 @@ export default function AssistantPage() {
     }
   }, [messages, isTyping]);
 
-  const handleSendMessage = (e?: React.FormEvent) => {
+  const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isTyping) return;
 
     const userMessage: Message = { role: "user", content: inputValue };
-    setMessages((prev) => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInputValue("");
     setIsTyping(true);
 
-    // Mock AI response
-    setTimeout(() => {
+    try {
+      // Convert history for Gemini format
+      const geminiHistory = messages.map(msg => ({
+        role: msg.role === "user" ? "user" as const : "model" as const,
+        parts: [{ text: msg.content }],
+      }));
+
+      const rawResponse = await getGeminiResponse(userMessage.content, geminiHistory, useSearch);
+      
+      let parsed;
+      try {
+        const cleaned = rawResponse.replace(/```json\n?|\n?```/g, "").trim();
+        parsed = JSON.parse(cleaned);
+      } catch (e) {
+        parsed = { thought: "Processing response...", answer: rawResponse, sources: [] };
+      }
+      
       const aiMessage: Message = {
         role: "assistant",
-        content: getMockResponse(userMessage.content),
+        content: parsed.answer || parsed,
+        thought: Array.isArray(parsed.thought) ? parsed.thought.join("\n") : parsed.thought,
+        sources: parsed.sources || []
       };
       setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("Chat Error:", error);
+      setMessages((prev) => [...prev, { 
+        role: "assistant", 
+        content: "I'm having trouble connecting right now. Please check your connection and try again." 
+      }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
-  };
-
-  const getMockResponse = (input: string) => {
-    const lowerInput = input.toLowerCase();
-    if (lowerInput.includes("date")) return "The general election is scheduled for November 5, 2024. Early voting dates vary by state—would you like me to check yours?";
-    if (lowerInput.includes("register")) return "You can usually register online, by mail, or in person at your local election office. I can help you find the specific link for your state!";
-    if (lowerInput.includes("vote")) return "Voting is your voice! You can vote in person on election day, or via mail-in ballot in most jurisdictions. What's your zip code?";
-    return "That's a great question about our civic process. I'm here to help you navigate it. Could you tell me a bit more about what you're looking for?";
+    }
   };
 
   return (
@@ -101,6 +123,8 @@ export default function AssistantPage() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onSubmit={handleSendMessage}
+                useSearch={useSearch}
+                onToggleSearch={() => setUseSearch(!useSearch)}
               />
             </div>
             <div className="mt-16 md:mt-20 max-w-md">
@@ -123,7 +147,12 @@ export default function AssistantPage() {
               className="flex-1 overflow-y-auto px-6 py-12 space-y-12 scrollbar-hide"
             >
               {messages.map((msg, idx) => (
-                <MessageBubble key={idx} role={msg.role} content={msg.content} />
+                <React.Fragment key={idx}>
+                  {msg.role === "assistant" && msg.thought && (
+                    <ThoughtProcess thoughts={msg.thought} />
+                  )}
+                  <MessageBubble role={msg.role} content={msg.content} sources={msg.sources} />
+                </React.Fragment>
               ))}
 
               {isTyping && <TypingIndicator />}
@@ -137,6 +166,8 @@ export default function AssistantPage() {
                   onChange={(e) => setInputValue(e.target.value)}
                   onSubmit={handleSendMessage}
                   compact
+                  useSearch={useSearch}
+                  onToggleSearch={() => setUseSearch(!useSearch)}
                 />
               </div>
             </div>
