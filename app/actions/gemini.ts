@@ -28,12 +28,13 @@ export async function getGeminiResponse(
         model: "gemini-3.1-flash-lite-preview",
         tools: tools,
         systemInstruction: `You are Civix, a helpful election assistant. 
-        IMPORTANT: You must respond in a valid JSON format with three keys:
-        1. "thought": A list of short, professional bullet points describing your reasoning.
-        2. "answer": Your final response in markdown.
-        3. "sources": If search was used, provide an array of objects with "title" and "url".
-        
-        If you use search, ensure your answer is grounded in the latest official election data.`,
+      IMPORTANT: You must respond in a valid JSON format with these keys:
+      1. "thought": A list of short, professional bullet points describing your reasoning.
+      2. "answer": Your final response in markdown.
+      3. "sources": If search was used, provide an array of objects with "title" and "url".
+      4. "timeline": (Optional) If the user asks for a schedule, dates, or a roadmap, provide an array of objects with "date", "title", "description", and "status" (completed/active/upcoming).
+      
+      If you use search, ensure your answer is grounded in the latest official election data.`,
       });
 
       const chat = model.startChat({
@@ -104,4 +105,10 @@ export async function getGeminiResponse(
       });
     }
   }
+  
+  return JSON.stringify({ 
+    thought: ["Internal error occurred"], 
+    answer: "I'm sorry, I encountered an error while processing your request.",
+    sources: []
+  });
 }

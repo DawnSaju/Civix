@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
 @import "tailwindcss";
 
 :root {
@@ -56,18 +58,39 @@ body {
     animation-name: zoomIn;
   }
 
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-500 { animation-delay: 500ms; }
-  .delay-700 { animation-delay: 700ms; }
-  .delay-1000 { animation-delay: 1000ms; }
-  
-  .duration-1000 { animation-duration: 1000ms; }
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .delay-700 {
+    animation-delay: 700ms;
+  }
+
+  .delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  .duration-1000 {
+    animation-duration: 1000ms;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideIn {
@@ -75,6 +98,7 @@ body {
     opacity: 0;
     transform: translateY(var(--tw-enter-translate-y, 0));
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -86,6 +110,7 @@ body {
     opacity: 0;
     transform: scale(var(--tw-enter-scale, 1));
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -120,7 +145,8 @@ body {
   color: #000;
 }
 
-.markdown-content ul, .markdown-content ol {
+.markdown-content ul,
+.markdown-content ol {
   margin-bottom: 1rem;
   padding-left: 1.25rem;
 }
@@ -136,13 +162,25 @@ body {
 
 /* Loading Animations */
 @keyframes wave {
-  0%, 100% { height: 8px; }
-  50% { height: 16px; }
+
+  0%,
+  100% {
+    height: 8px;
+  }
+
+  50% {
+    height: 16px;
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .animate-wave {
@@ -157,3 +195,64 @@ body {
   animation: shimmer 2s linear infinite;
 }
 
+.civix-wordmark {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-weight: 400;
+  font-size: 88px;
+  line-height: 1;
+  color: #1a1a1f;
+  letter-spacing: -0.01em;
+  user-select: none;
+}
+
+.shadow-premium {
+  box-shadow: 
+    0 0 0 1px rgba(0,0,0,0.08),
+    0 2px 2px rgba(0,0,0,0.04),
+    0 4px 8px rgba(0,0,0,0.04),
+    0 12px 24px rgba(0,0,0,0.04);
+}
+
+.shadow-premium-hover {
+  box-shadow: 
+    0 0 0 1px rgba(0,0,0,0.12),
+    0 4px 8px rgba(0,0,0,0.08),
+    0 8px 16px rgba(0,0,0,0.08),
+    0 16px 32px rgba(0,0,0,0.08);
+}
+
+.btn-skeuomorphic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 54px;
+  background-image: linear-gradient(to top, rgb(216, 217, 219) 0%, rgb(255, 255, 255) 80%, rgb(253, 253, 253) 100%);
+  border-radius: 30px;
+  border: 1px solid rgb(143, 144, 146);
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgb(96, 96, 96);
+  text-shadow: rgb(255, 255, 255) 0px 1px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.btn-skeuomorphic:hover {
+  box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 3px 3px #CECFD1;
+  transform: translateY(-1px);
+}
+
+.btn-skeuomorphic:active, .btn-skeuomorphic:focus {
+  box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 5px 3px #999, inset 0 0 30px #aaa;
+  transform: translateY(1px);
+}
+
+.grid-background {
+  background-color: rgb(246, 245, 241);
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.055) 1px, transparent 1px);
+  background-size: 186px 160px;
+}

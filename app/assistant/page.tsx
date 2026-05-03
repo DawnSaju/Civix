@@ -8,12 +8,14 @@ import { MessageBubble, TypingIndicator } from "../../components/assistant/Messa
 import { HeroIllustration } from "../../components/assistant/HeroIllustration";
 import { getGeminiResponse } from "../actions/gemini";
 import { ThoughtProcess } from "../../components/assistant/ThoughtProcess";
+import { ElectionTimeline, TimelineEvent } from "../../components/assistant/ElectionTimeline";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
   thought?: string;
   sources?: { title: string; url: string }[];
+  timeline?: TimelineEvent[];
 };
 
 /**
@@ -61,17 +63,19 @@ export default function AssistantPage() {
       
       let parsed;
       try {
+        if (!rawResponse) throw new Error("Empty response");
         const cleaned = rawResponse.replace(/```json\n?|\n?```/g, "").trim();
         parsed = JSON.parse(cleaned);
       } catch (e) {
-        parsed = { thought: "Processing response...", answer: rawResponse, sources: [] };
+        parsed = { thought: "Processing response...", answer: rawResponse || "I'm sorry, I couldn't generate a response.", sources: [] };
       }
       
       const aiMessage: Message = {
         role: "assistant",
         content: parsed.answer || parsed,
         thought: Array.isArray(parsed.thought) ? parsed.thought.join("\n") : parsed.thought,
-        sources: parsed.sources || []
+        sources: parsed.sources || [],
+        timeline: parsed.timeline || null
       };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
@@ -151,7 +155,7 @@ export default function AssistantPage() {
                   {msg.role === "assistant" && msg.thought && (
                     <ThoughtProcess thoughts={msg.thought} />
                   )}
-                  <MessageBubble role={msg.role} content={msg.content} sources={msg.sources} />
+                  <MessageBubble role={msg.role} content={msg.content} sources={msg.sources} timeline={msg.timeline} />
                 </React.Fragment>
               ))}
 

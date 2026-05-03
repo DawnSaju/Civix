@@ -3,6 +3,8 @@ import ReactMarkdown from "react-markdown";
 import { CivixIcon } from "../Icons";
 import { ActionIcon } from "../ActionIcon";
 
+import { ElectionTimeline, TimelineEvent } from "./ElectionTimeline";
+
 interface Source {
   title: string;
   url: string;
@@ -12,9 +14,10 @@ interface MessageBubbleProps {
   role: "user" | "assistant";
   content: string;
   sources?: Source[];
+  timeline?: TimelineEvent[];
 }
 
-export function MessageBubble({ role, content, sources = [] }: MessageBubbleProps) {
+export function MessageBubble({ role, content, sources = [], timeline = [] }: MessageBubbleProps) {
   const isUser = role === "user";
 
   return (
@@ -39,11 +42,20 @@ export function MessageBubble({ role, content, sources = [] }: MessageBubbleProp
         ) : (
           <ReactMarkdown>{content}</ReactMarkdown>
         )}
+
+        {/* Timeline Integrated Inside Bubble (Optional: only if you want it really inside) */}
+        {/* But usually better to have it right below but tied to the same visual unit */}
       </div>
 
-      {/* Sources (Assistant Only) */}
-      {!isUser && sources.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-2 animate-in fade-in slide-in-from-top-1 duration-700">
+      {/* Grounded Attachments Row (Sources & Timeline) */}
+      {!isUser && (sources.length > 0 || (timeline && timeline.length > 0)) && (
+        <div className="mt-3 flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-700">
+          {/* Roadmap Toggle Pill */}
+          {timeline && timeline.length > 0 && (
+            <ElectionTimeline events={timeline} />
+          )}
+
+          {/* Source Pills */}
           {sources.slice(0, 6).map((source, idx) => (
             <div key={idx} className="group relative">
               <a
@@ -63,7 +75,6 @@ export function MessageBubble({ role, content, sources = [] }: MessageBubbleProp
                 <span className="truncate max-w-[140px] font-medium">{new URL(source.url).hostname}</span>
               </a>
               
-              {/* Source Preview Card on Hover */}
               <div className="absolute bottom-full left-0 mb-3 w-64 p-4 rounded-xl bg-white border border-neutral-100 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-1 group-hover:translate-y-0 transition-all duration-300 z-[100] pointer-events-none">
                 <div className="flex items-center gap-2 mb-2">
                   <img 
